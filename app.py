@@ -6,20 +6,14 @@ app = Flask(__name__)
 @app.route('/send_message', methods=['POST'])
 def send_message():
     try:
-        # Get the raw data for debugging purposes
         raw_data = request.get_data(as_text=True)
         print(f'Raw data received: {raw_data}')
-        
-        # Attempt to parse the JSON data
         json_data = request.get_json(force=True)
         print(f'JSON data: {json_data}')
-        
-        # Extract the message from the JSON data
         message = json_data.get('message')
         print(f'Received message: {message}')
         
         if message:
-            # Execute the Python script to send a message to the bot
             result = subprocess.run(['python', 'send_message.py', message], capture_output=True, text=True)
             print(f'Result: {result.stdout}, Error: {result.stderr}')
             return jsonify({"status": "success", "message": result.stdout}), 200
